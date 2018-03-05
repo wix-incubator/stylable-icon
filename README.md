@@ -66,7 +66,7 @@ ToDo: cascade icon set
 JS icon helpers:
 
 ```js
-import { svgIcon, htmlIcon } from 'stylable-icon';
+import { svgIcon, htmlIcon, emoji } from 'stylable-icon';
 
 // wraps svg content with svg tag with default
 // viewBox of 32px width and height and 
@@ -79,6 +79,9 @@ icon1() // CSS mixin for icon1
 // the icon area. 
 const icon2 = htmlIcon('[htmlContent]');
 icon2() // > css mixin for icon2
+
+const emoji = emoji('[emoji]');
+emoji() // > css mixin for emoji
 ```
 
 CSS icon helpers:
