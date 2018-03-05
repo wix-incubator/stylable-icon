@@ -22,7 +22,6 @@ const htmlIcon = (html) => {
     return mixIcon;
 };
 
-module.exports.iconContent = iconContent; // ToDo: Remove export
 module.exports.htmlIcon = htmlIcon;
 module.exports.svgIcon = (svgContent) => {
     const html = `<svg viewBox='0 0 32 32' fill='currentColor'>${svgContent}</svg>`;
