@@ -1,0 +1,74 @@
+:import {
+    -st-from: "../src/icon.st.css";
+    -st-default: Icon;
+}
+:import {
+    -st-from: "./icon-set.js";
+    -st-named: lightningIcon, squareIcon, dotIcon, garbageBinIcon, wearyCatFaceEmoji, pileOfPooEmoji, xChar;
+}
+
+:vars {
+    
+}
+
+:global(body) {
+    padding:0;
+    margin: 0;
+}
+
+.root {
+    width: 300px;
+    border: 1px solid red;
+    animation: colorTween 3s infinite ease-in-out;
+}
+
+Icon {
+    width:150px;
+    height:150px;
+    animation: animateSize 3s infinite;
+}
+
+.myIcon {
+    -st-extends: Icon;
+    -st-mixin: squareIcon();
+} 
+.root:hover .myIcon {
+    -st-mixin: dotIcon();
+}
+
+
+.myIcon2 {
+    -st-extends: Icon;
+    -st-mixin: garbageBinIcon();
+} 
+.root:hover .myIcon2 {
+    -st-mixin: lightningIcon();
+}
+
+
+.myEmoji {
+    -st-extends: Icon;
+    -st-mixin: wearyCatFaceEmoji();
+} 
+.root:hover .myEmoji {
+    -st-mixin: pileOfPooEmoji();
+}
+
+
+.myChar {
+    -st-extends: Icon;
+    -st-mixin: xChar();
+} 
+
+@keyframes animateSize {
+    0% { width:16px; height:16px; }
+    50% { width:128px; height:128px; }
+    100% { width:16px; height:16px; }
+}
+
+
+@keyframes colorTween {
+    0% { color:red }
+    50% { color:lightblue }
+    100% { color:red }
+}
