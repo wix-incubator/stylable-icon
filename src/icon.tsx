@@ -25,7 +25,7 @@ export class Icon extends React.Component<IconProps, IconState> {
     };
     private contentDiv:HTMLDivElement | null = null;
     public state = {
-        content: this.getContentFromReactRender()
+        content: this.getContentFromReactRender(this.props.base || {})
     };
 
     render() {
@@ -35,17 +35,15 @@ export class Icon extends React.Component<IconProps, IconState> {
                 <div onAnimationEnd={this.onAnimationEnd}></div>
                 <div ref={this.setContentElement} dangerouslySetInnerHTML={{__html: this.state.content}}></div>
             </div>
-        );
+        );//
     }
 
-    private getContentFromReactRender():string {
-        const {base} = this.props;
-        let result = '';
-        if(base) {
+    private getContentFromReactRender({content, id}:{content?:string, id?:string}):string {
+        let result = content || '';
+        if(content && id) {
             if(this.context[contextSymbol]){
-                result = this.context[contextSymbol](base).toString();// || '';
-            } else {
-                result = base.content;
+                const iconDef = this.context[contextSymbol](id);
+                result = iconDef ? iconDef.toString() : content;
             }
         }
         return result;
@@ -55,12 +53,14 @@ export class Icon extends React.Component<IconProps, IconState> {
         this.contentDiv = element;
     }
 
+    private cache:{[s:string]:Element|null} = {};
+
     private onAnimationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
         if(this.contentDiv) {
-            debugger;
             const content = window.getComputedStyle(event.currentTarget, ':before').content || '""';
-            // console.log('tick', content, event);
-            this.contentDiv.innerHTML = content.slice(1, -1)
+            // console.log('onAnimationEnd', content, event);
+            const parsedContent = JSON.parse(content);
+            this.contentDiv.innerHTML = this.getContentFromReactRender({content:parsedContent, id:parsedContent});
         } else {
             debugger;
         }

@@ -97,7 +97,7 @@ describe('<Icon />', () => {
             });
         });
 
-        it.skip('should render from CSS override with react context override ', async () => {
+        it('should render from CSS override with react context override ', async () => {
             const { exports, meta, cssOutput } = createStylesheet(`<span>❌</span>`);
             const originalIcon = htmlIcon(`<span>❌</span>`);
             const iconContext = htmlIcon(`<span>✅</span>`);

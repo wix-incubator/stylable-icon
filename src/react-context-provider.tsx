@@ -13,8 +13,8 @@ export function IconContextValidator(context:any, id:string){
     return context[id] instanceof IconContextProviderBase ? null : false;
 }
 
-function getIconDefFromContext(iconDic: IconDic, iconDef: IconDef):IconDef {
-    return iconDic[iconDef.id]; // ToDo: fallback
+function getIconDefFromContext(iconDic: IconDic, id: string):IconDef {
+    return iconDic[id]; // ToDo: fallback
 }
 
 export class IconContextProviderBase extends React.Component<void, {iconDic: IconDic}> {
