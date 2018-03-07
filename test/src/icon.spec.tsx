@@ -54,7 +54,7 @@ describe('<Icon />', () => {
 
     describe('CSS override', () => {
 
-        function createStylesheet(iconContent:string) {
+        function createStylesheet(iconContent:string, icon2Content:string = iconContent) {
             const {exports, meta} = generateStylableResult({
                 entry: '/style.st.css',
                 files: {
@@ -62,10 +62,13 @@ describe('<Icon />', () => {
                         content: `
                             :import {
                                 -st-from: "./icon-set.js";
-                                -st-named: dotIcon;
+                                -st-named: icon1, icon2;
                             }
                             .myIcon {
-                                -st-mixin: dotIcon();
+                                -st-mixin: icon1();
+                            }
+                            .root[data-state-on] .myIcon {
+                                -st-mixin: icon2();
                             }
                         `
                     },
@@ -73,7 +76,8 @@ describe('<Icon />', () => {
                         const defHelpers = require('/def-helpers');
                         const {htmlIcon} = defHelpers;
                         
-                        module.exports.dotIcon = htmlIcon(${JSON.stringify(iconContent)});
+                        module.exports.icon1 = htmlIcon(${JSON.stringify(iconContent)});
+                        module.exports.icon2 = htmlIcon(${JSON.stringify(icon2Content)});
                     `},
                     '/def-helpers.js': {content: definitionHelpersRaw}
                 }                
@@ -95,7 +99,38 @@ describe('<Icon />', () => {
             await waitFor(() => {
                 expect(iconDriver.content()).to.have.html(`<span>✅</span>`);
             });
-        });        
+        });
+
+        it('should rerender when CSS override is changed and cache content elements', async () => {
+            const { exports, meta, cssOutput } = createStylesheet(`<span>🐖</span>`, `<span>🥓</span>`);   
+
+            const iconDriver = renderDriver(
+                <div className={exports.root}>
+                    <style>{cssOutput}</style>
+                    <Icon className={exports.myIcon} />
+                </div>
+            );
+            
+            let initialContent:Element;
+
+            await waitFor(() => {
+                expect(iconDriver.content(), 'initial CSS override').to.have.html(`<span>🐖</span>`);
+                initialContent = (iconDriver.content() as HTMLElement).firstElementChild!;
+            });
+
+            (iconDriver.container.firstChild! as HTMLElement).setAttribute('data-state-on', '');
+            
+            await waitFor(() => {
+                expect(iconDriver.content(), 'state CSS override ').to.have.html(`<span>🥓</span>`);
+            });
+
+            (iconDriver.container.firstChild! as HTMLElement).removeAttribute('data-state-on');
+
+            await waitFor(() => {
+                expect(iconDriver.content(), 'back to initial CSS override').to.have.html(`<span>🐖</span>`);
+                expect(iconDriver.content()!.firstElementChild, 'cache elements').to.equal(initialContent);
+            });
+        });
 
         it('should handle CSS content with mix quatation (escape CSS inline content)', async () => {
             const { exports, meta, cssOutput } = createStylesheet(`<span width="30" height='40'>'✅"</span>`);   

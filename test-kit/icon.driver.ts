@@ -6,7 +6,7 @@ import IconBaseStyle from '../src/icon.st.css';
 export class IconTestDriver {
     private stylableDom: StylableDOMUtil;
 
-    constructor(private container: Element) {
+    constructor(public container: Element) {
         this.stylableDom = new StylableDOMUtil(IconBaseStyle, container);
     }
 

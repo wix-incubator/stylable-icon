@@ -58,9 +58,17 @@ export class Icon extends React.Component<IconProps, IconState> {
     private onAnimationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
         if(this.contentDiv) {
             const content = window.getComputedStyle(event.currentTarget, ':before').content || '""';
-            // console.log('onAnimationEnd', content, event);
-            const parsedContent = JSON.parse(content);
-            this.contentDiv.innerHTML = this.getContentFromReactRender({content:parsedContent, id:parsedContent});
+            const cachedElement = this.cache[content];
+            if(cachedElement) {
+                while (this.contentDiv.firstChild) {
+                    this.contentDiv.removeChild(this.contentDiv.firstChild);
+                }
+                this.contentDiv.appendChild(cachedElement);
+            } else {
+                const parsedContent = JSON.parse(content);
+                this.contentDiv.innerHTML = this.getContentFromReactRender({content:parsedContent, id:parsedContent});
+                this.cache[content] = this.contentDiv.firstElementChild;
+            }
         } else {
             debugger;
         }
