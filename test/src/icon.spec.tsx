@@ -73,7 +73,7 @@ describe('<Icon />', () => {
                         const defHelpers = require('/def-helpers');
                         const {htmlIcon} = defHelpers;
                         
-                        module.exports.dotIcon = htmlIcon("${iconContent}");
+                        module.exports.dotIcon = htmlIcon(${JSON.stringify(iconContent)});
                     `},
                     '/def-helpers.js': {content: definitionHelpersRaw}
                 }                
@@ -94,6 +94,25 @@ describe('<Icon />', () => {
             
             await waitFor(() => {
                 expect(iconDriver.content()).to.have.html(`<span>✅</span>`);
+            });
+        });        
+
+        it('should handle CSS content with mix quatation (escape CSS inline content)', async () => {
+            const { exports, meta, cssOutput } = createStylesheet(`<span width="30" height='40'>'✅"</span>`);   
+
+            const iconDriver = renderDriver(
+                <div className={exports.root}>
+                    <style>{cssOutput}</style>
+                    <Icon className={exports.myIcon} />
+                </div>
+            );
+            
+            await waitFor(() => {
+                const contentElement = iconDriver.content()!;
+                expect(contentElement).to.have.text(`'✅"`);
+                expect(contentElement.firstChild).to.have.attribute('width', '30');
+                expect(contentElement.firstChild).to.have.attribute('height', '40');
+                expect(contentElement.firstChild).to.be.instanceof(HTMLSpanElement);
             });
         });
 

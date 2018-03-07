@@ -1,4 +1,4 @@
-const iconContent = ([content]) => {
+const createIconMixin = (content) => {
     var animationId = 's'+Math.round(Math.random()*99999).toString(36);
     return {
         '&>:nth-child(1)': {
@@ -6,7 +6,7 @@ const iconContent = ([content]) => {
         },
         '&>:nth-child(1)::before': {
             // 'display': 'none',
-            'content': '"' + (content || '') + '"',
+            'content': content,
         },
         ['@keyframes ' + animationId]: {
             '0%':{'color':'black'}, '100%':{'color':'red'}
@@ -15,7 +15,8 @@ const iconContent = ([content]) => {
 }
 
 const htmlIcon = (html) => {
-    const mixIcon = () => iconContent([html]);
+    const htmlStr = JSON.stringify(html || '');
+    const mixIcon = () => createIconMixin(htmlStr);
     mixIcon.content = html;
     mixIcon.id = html;
     mixIcon.toString = () => html;
