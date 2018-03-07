@@ -17,7 +17,7 @@ function getIconDefFromContext(iconDic: IconDic, id: string):IconDef {
     return iconDic[id]; // ToDo: fallback
 }
 
-export class IconContextProviderBase extends React.Component<void, {iconDic: IconDic}> {
+export class IconContextProviderBase extends React.Component<{children:JSX.Element|JSX.Element[]}, {iconDic: IconDic}> {
     static childContextTypes = {
         [contextSymbol]:IconContextValidator
     }
